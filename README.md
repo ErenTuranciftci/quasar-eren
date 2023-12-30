@@ -11,6 +11,8 @@ npm install
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
+first run server.js in backend(node server.js) 
+then
 quasar dev
 ```
 
