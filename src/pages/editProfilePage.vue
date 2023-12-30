@@ -58,30 +58,49 @@
   </q-page-container>
 </template>
 
+
+
 <script>
+import { api } from 'boot/axios'
 import { useUsersStore } from "src/stores/users";
+import { onMounted } from 'vue';
 
 export default {
   data() {
     return {
+
       email: "",
       username: "",
       password: "",
     };
   },
   methods: {
-    saveChanges() {
+
+    async saveChanges() {
       const usersStore = useUsersStore();
+      const userid = usersStore.getI;
 
-      const user = {
-        email: this.email,
-        username: this.username,
-        password: this.password,
-      };
-      usersStore.editUser(this.email, this.username, this.password);
+      try {
+        const response = await api.put(`http://localhost:3000/api/user/${userid}`, {
+          email: this.email,
+          username: this.username,
+          password: this.password,
+        });
 
-      this.$router.push("/profile");
+        const data = response.data;
+
+        if (data.success) {
+          this.$router.push("/profile");
+          console.log('User profile updated successfully');
+        } else {
+          console.error('Failed to update user profile:', data.message);
+        }
+      } catch (error) {
+        console.error('Error updating user profile:', error);
+      }
     },
+
   },
+
 };
 </script>

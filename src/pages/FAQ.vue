@@ -3,13 +3,12 @@
     <h3>FAQ</h3>
     <div class="q-pa-md q-gutter-sm">
       <q-btn
-        color="white"
-        text-color="black"
+        color="primary"
+        text-color="white"
         label="Home"
         @click="$router.replace('/')"
       />
-      <q-btn color="primary" label="Primary" />
-      <q-btn color="secondary" label="Secondary" />
+
     </div>
     <div>
       <q-card class="my-card">

@@ -43,7 +43,7 @@
 
 <script>
 
-import { useUsersStore } from "src/stores/users";
+import { api } from "src/boot/axios";
 
 export default {
   data() {
@@ -55,22 +55,25 @@ export default {
   },
   methods: {
     signUp() {
-      const usersStore = useUsersStore();
-      usersStore.addUser(this.email, this.username, this.password);
-      alert(`${this.email}, ${this.username}, ${this.password}`);
 
-      const usersArray = usersStore.getUsers;
+      api.post('http://localhost:3000/api/signup', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      })
+        .then(response => {
+          console.log(response.data);
 
-      usersArray.forEach((user) => {
-        console.log(
-          `Email: ${user.email}, Username: ${user.username}, Password: ${user.password}`
-        );
-        alert(
-          `Email: ${user.email}, Username: ${user.username}, Password: ${user.password}`
-        );
-      });
+          this.$router.push('/signIn');
+        })
+        .catch(error => {
+          console.error('Error signing up:', error);
 
-      this.$router.push("/signIn");
+          this.$q.notify({
+            color: 'negative',
+            message: 'Error signing up. Please try again.',
+          });
+        });
     },
   },
 };

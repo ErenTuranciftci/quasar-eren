@@ -66,7 +66,10 @@
 </template>
 
 <script>
+
+import { api } from 'boot/axios'
 import { useUsersStore } from "src/stores/users";
+
 
 export default {
   data() {
@@ -80,21 +83,35 @@ export default {
       alert(this.password);
     },
     signIn() {
+
       const usersStore = useUsersStore();
-      const usersArray = usersStore.getUsers;
 
-      usersArray.forEach((user, index) => {
-        if (user.email == this.email && user.password == this.password) {
-          usersStore.setIsLogin(true);
-          usersStore.setI(index);
-          this.$router.push("/profile");
-        }
-      });
+      api.post('http://localhost:3000/api/signin', {
+        email: this.email,
+        password: this.password,
+      })
+        .then(response => {
+          console.log(response.data);
+          const user = response.data.user;
 
-      if (usersStore.getIsLogin == false)
-        alert("Invalid email or password. Please try again. ");
+          if (user && user.userid) {
+          usersStore.setI(user.userid);
+          alert(usersStore.getI);
+           this.$router.push('/profile');
+          } else {
+            console.error('Invalid response structure. Userid not found.');
+          }
+        })
+        .catch(error => {
+          console.error('Error signing in:', error);
+          alert('Invalid email or password. Please try again.');
+          this.$q.notify({
+            color: 'negative',
+            message: 'Invalid email or password. Please try again.',
+          });
+        });
 
-      alert(usersStore.getI);
+
     },
   },
 };

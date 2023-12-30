@@ -10,21 +10,21 @@
           <q-field outlined label="E-mail" stack-label>
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ email }}
+                {{ this.user.email }}
               </div>
             </template>
           </q-field>
           <q-field outlined label="Username" stack-label>
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ username }}
+                {{ this.user.username }}
               </div>
             </template>
           </q-field>
           <q-field outlined label="Password" stack-label>
             <template v-slot:control>
               <div class="self-center full-width no-outline" tabindex="0">
-                {{ password }}
+                {{ this.user.password }}
               </div>
             </template>
           </q-field>
@@ -58,24 +58,43 @@
 
 <script>
 import { useUsersStore } from "src/stores/users";
+import { onMounted } from 'vue';
 
 export default {
   data() {
-    const usersStore = useUsersStore();
-    const user = usersStore.getUserByIndex(usersStore.getI);
-    return {
-      email: user.email,
-      username: user.username,
-      password: user.password,
+    return{
+      user:{},
     };
   },
   methods: {
-    signOut() {
+    async fetchData() {
+      const usersStore = useUsersStore();
+      const userid = usersStore.getI;
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/user/${userid}`);
+        const data = await response.json();
+
+        if (data.success) {
+
+          this.user = data.user;
+        } else {
+          console.error('Failed to fetch user profile:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    },
+  signOut() {
       const usersStore = useUsersStore();
       alert("Signing out...");
       usersStore.setIsLogin(false);
       this.$router.push("/");
     },
+
+},
+  mounted() {
+    this.fetchData();
   },
 };
 </script>

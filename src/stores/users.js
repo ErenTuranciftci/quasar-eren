@@ -6,6 +6,7 @@ export const useUsersStore = defineStore({
     users: [],
     isLogin: false,
     i: 0,
+    loggedInUser : null,
   }),
 
   actions: {
@@ -26,11 +27,16 @@ export const useUsersStore = defineStore({
     setI(value) {
       this.i = value;
     },
+    setLoggedInUser(user) {
+      this.loggedInUser = user;
+    },
   },
   getters: {
     getUsers: (state) => state.users,
     getIsLogin: (state) => state.isLogin,
     getI: (state) => state.i,
     getUserByIndex: (state) => (index) => state.users[index],
+    getLoggedInUser: (state) => state.loggedInUser,
   },
-});
+  },
+);
